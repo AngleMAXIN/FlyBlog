@@ -27,7 +27,6 @@ def user_show():
     return bar
 
 
-
 @data.route('/data_show')
 @admin_login_required
 def index():
@@ -35,10 +34,10 @@ def index():
     user_bar = user_show()
     content = {
 
-        "myechart_user" : user_bar.render_embed(),
-        "myechart_tags" : tag_bar.render_embed(),
+        "myechart_user": user_bar.render_embed(),
+        "myechart_tags": tag_bar.render_embed(),
         # "host":  current_app.config['REMOTE_HOST'],
         # "script_tags" : tag_bar.get_js_dependencies(),
         # "script_users": user_bar.get_js_dependencies()
     }
-    return render_template("data/render.html",**content)
+    return render_template("data/render.html", **content)

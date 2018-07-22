@@ -31,19 +31,6 @@ class User(UserMixin, db.Document):
     meta = {
         'indexes': ['name']}
 
-    @staticmethod
-    def users_number():
-        return User.objects.count()
-
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return None
-        return User.objects.get(name=data['name'])
-
     def generate_auth_token(self, expiration):
         s = Serializer(current_app.config['SECRET_KEY'],
                        expires_in=expiration)
@@ -51,6 +38,29 @@ class User(UserMixin, db.Document):
 
     def messages_number(self):
         return len(self.messages)
+
+    @property
+    def password(self):
+        raise AttributeError("password is not a readable attribute")
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def add_views_message(self, post_id, post_title):
+        """add user'mesages when user view some posts"""
+        mes = Message(post_id=post_id, post=post_title)
+        self.update(push__view_messages=mes)
+
+    def get_id(self):
+        try:
+            return self.name
+        except AttributeError:
+            raise NotImplementedError(
+                'No `username` attribute - override `get_id`')
 
     def to_dict(self):
         result = dict()
@@ -64,26 +74,11 @@ class User(UserMixin, db.Document):
 
         return result
 
-    @property
-    def password(self):
-        raise AttributeError("password is not a readable attribute")
-
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-    def get_id(self):
-        try:
-            return self.name
-        except AttributeError:
-            raise NotImplementedError(
-                'No `username` attribute - override `get_id`')
-
     def __unicode__(self):
         return self.name
+
+    def __repr__(self):
+        return '<User - %s>' % self.name
 
     @staticmethod
     def create(name, email, directions, password, get_tag):
@@ -93,9 +88,18 @@ class User(UserMixin, db.Document):
         user.get_tags = get_tags(get_tag)
         user.save()
 
-    def add_views_message(self, post_id, post_title):
-        mes = Message(post_id=post_id, post=post_title)
-        self.update(push__view_messages=mes)
+    @staticmethod
+    def users_number():
+        return User.objects.count()
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.objects.get(name=data['name'])
 
     @staticmethod
     def find_user(input_text):
@@ -105,10 +109,7 @@ class User(UserMixin, db.Document):
             return False
         return user
 
-    def __repr__(self):
-        return '<User - %s>' % self.name
-
-
+    
 @login_manager.user_loader
 def load_user(user_name):
     try:

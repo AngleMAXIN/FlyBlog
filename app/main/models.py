@@ -6,7 +6,6 @@ import datetime
 from app import db
 from flask import url_for
 from mongoengine.queryset.visitor import Q
-# from app.api_v1 import api_v1
 from flask_login import current_user
 from app.user.models import User
 from app.public.models import Tags, Message
@@ -39,9 +38,6 @@ class Post(db.Document):
         'ordering': ['-create_time'],
         'indexes': ['post_views', 'title']}
 
-    @staticmethod
-    def post_number():
-        return Post.objects.count()
 
     def to_dict(self):
         result = dict()
@@ -60,6 +56,7 @@ class Post(db.Document):
 
     @staticmethod
     def search_text(keyword):
+        """search text by input"""
         result = Post.objects(Q(title__icontains=keyword)
                               | Q(body__icontains=keyword))
         return result
@@ -78,6 +75,10 @@ class Post(db.Document):
         message = Message(post=post.title, post_id=post_id,
                           who=current_user.name)
         post.author.update(push__messages=message)
+
+    @staticmethod
+    def post_number():
+        return Post.objects.count()
 
     @staticmethod
     def find_tags(tag_list):

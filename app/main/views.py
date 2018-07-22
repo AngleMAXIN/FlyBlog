@@ -25,13 +25,14 @@ def index():
     page = request.args.get('page', 1, type=int)
     content = {
         'top_articles': post_by_tags,
-        'articles': Post.objects.paginate(page=page, per_page=8, error_out=False)}
+        'articles': Post.objects.paginate(page=page, per_page=2, error_out=False)}
     return render_template('main/index.html', **content)
 
 
 @main.route('/about')
 def about():
     return render_template('main/about.html')
+
 
 @main.route('/single/<post_id>', methods=['GET', 'POST'])
 @cache.memoize(300)
@@ -87,7 +88,6 @@ def add_post():
         title = form_data['title']
         body = form_data['body']
         tags = form_data['get_tags'].split()
-
         user = User.objects.get(name=current_user.name)
         user.update(inc__post_number=1)
         imag_url = session.pop('POST_IMG', None)

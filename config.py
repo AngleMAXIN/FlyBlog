@@ -52,7 +52,6 @@ class DevConfig(Config):
 class ProConfig(Config):
     DEBUG = False
     MONGO_DB = 'flydb'
-
     MONGODB_SETTINGS = {
         'host': 'mongodb://localhost:27017/{}'.format(MONGO_DB),
         'connect': False

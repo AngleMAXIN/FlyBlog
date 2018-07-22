@@ -8,8 +8,7 @@ from app.main.models import Post
 from app.public.models import Tags
 from app.user.models import User
 from . import api_v1
-
-
+ 
 class PostViews(MethodView):
     @cache.memoize(300)
     def get(self, post_id=None, user_name=None):
