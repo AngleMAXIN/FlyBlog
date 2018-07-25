@@ -4,14 +4,18 @@ import os
 
 
 class Config():
+
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'this is a secret string'
 
     _BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__name__)))
+
     MONGODB_CONNECT = True
 
     SAVEPIC = os.path.join(_BASE_DIR, 'app/static/img').replace('\\', '/')
+
     POST_IMG_URL = os.path.join(
         _BASE_DIR, 'app/static/postImg').replace("\\", '/')
+
     ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 
