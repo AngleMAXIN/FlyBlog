@@ -16,8 +16,9 @@
 
 ### - 添加了数据分析系统，采用了pyecharts，对部分数据进行了简单的分析展示
 
-![1532554799456](C:\Users\16781\AppData\Local\Temp\1532554799456.png)
-
+[fly blog](http://39.106.120.138/data/data_show)
+username :admin
+password : maxin123
 ----------
 ## flask插件 ##
 
